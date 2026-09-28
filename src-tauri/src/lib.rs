@@ -12,7 +12,6 @@ pub mod tokens;
 
 use std::sync::{Arc, OnceLock};
 
-use tauri::image::Image;
 use tauri::menu::{CheckMenuItem, Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{AppHandle, Emitter, Manager, WindowEvent, Wry};
@@ -120,7 +119,7 @@ fn build_tray(app: &AppHandle, helper: &AppHelper) -> tauri::Result<()> {
     #[cfg(target_os = "macos")]
     {
         builder = builder
-            .icon(Image::from_bytes(include_bytes!(
+            .icon(tauri::image::Image::from_bytes(include_bytes!(
                 "../icons/tray-template.png"
             ))?)
             .icon_as_template(true);
