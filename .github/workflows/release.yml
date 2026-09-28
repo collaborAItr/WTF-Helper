@@ -10,6 +10,9 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+  # Exercise the build when this workflow itself changes.
+  pull_request:
+    paths: ['.github/workflows/release.yml']
 
 permissions:
   contents: read
