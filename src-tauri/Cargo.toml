@@ -1,0 +1,43 @@
+[package]
+name = "wtf-helper"
+version = "0.1.0"
+description = "WTF Helper: read-only computer checks your collaborAItr guide can ask for, each one approved by you."
+authors = ["collaborAItr"]
+license = "Apache-2.0"
+repository = "https://github.com/collaborAItr/WTF-Helper"
+edition = "2021"
+rust-version = "1.80"
+publish = false
+
+[lib]
+name = "wtf_helper_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-single-instance = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "net", "process", "rt-multi-thread", "sync", "time", "io-util"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+futures-util = "0.3"
+keyring = { version = "3", features = ["apple-native", "windows-native"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["test-util"] }
+
+[features]
+# Pins the build to apidev.collaboraitr.com with its own bundle id. Use with tauri.test.conf.json.
+test-build = []
+# Pins the build to http://localhost:3001 for working on the relay locally. Never released.
+local-dev = []
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

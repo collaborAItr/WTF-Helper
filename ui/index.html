@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WTF Helper</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="product">WTF Helper</h1>
+      <span id="test-badge" class="badge" hidden>TEST</span>
+    </header>
+
+    <p id="notice" class="notice" role="status" hidden></p>
+
+    <main>
+      <section id="pair-view" hidden>
+        <h2>Connect this computer</h2>
+        <ol class="steps">
+          <li>In collaborAItr, ask your guide to connect WTF Helper. It shows a 6-digit code.</li>
+          <li>Type that code here.</li>
+        </ol>
+        <form id="pair-form" autocomplete="off">
+          <label for="code">6-digit code</label>
+          <div class="row">
+            <input id="code" name="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" required />
+            <button id="pair-button" type="submit" class="primary">Connect</button>
+          </div>
+        </form>
+        <p id="pair-error" class="error" role="alert" hidden></p>
+        <p class="fine">This helper connects only to <strong class="host"></strong>.</p>
+      </section>
+
+      <section id="paired-view" hidden>
+        <p id="connection" class="connection"></p>
+        <dl class="facts">
+          <dt>Service</dt>
+          <dd id="service"></dd>
+          <dt>Account</dt>
+          <dd id="account"></dd>
+          <dt>This computer</dt>
+          <dd id="device"></dd>
+          <dt>Connected on</dt>
+          <dd id="paired-at"></dd>
+        </dl>
+
+        <div class="pause">
+          <label class="switch">
+            <input id="paused" type="checkbox" />
+            <span>Pause all checks</span>
+          </label>
+          <p class="fine">While paused, WTF Helper refuses every check, even when "Allow all" is on.</p>
+        </div>
+
+        <div id="disconnect-area">
+          <button id="disconnect" type="button" class="danger">Disconnect</button>
+        </div>
+        <div id="confirm" class="confirm" hidden>
+          <p>Disconnect this computer? Your guide will not be able to run checks until you connect again with a new code.</p>
+          <p class="fine">To remove it from your account list too, choose Disconnect next to this computer in collaborAItr.</p>
+          <div class="row">
+            <button id="confirm-yes" type="button" class="danger">Yes, disconnect</button>
+            <button id="confirm-no" type="button">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="activity-view">
+        <h2>Activity</h2>
+        <p class="fine">Each check your guide asked for, and who allowed it. Results are not saved here.</p>
+        <p id="no-activity" class="empty">No checks yet.</p>
+        <ul id="log" class="log"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>WTF Helper only reads information. Nothing on this computer is changed.</p>
+      <p class="fine">Version <span id="version"></span></p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
