@@ -1,0 +1,8 @@
+node_modules/
+.cache/
+.DS_Store
+src-tauri/target/
+src-tauri/gen/
+# osquery is downloaded by `npm run fetch-osquery`, never committed.
+src-tauri/binaries/*
+!src-tauri/binaries/.gitkeep
