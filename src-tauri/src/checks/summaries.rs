@@ -245,9 +245,9 @@ pub async fn disk_space<M: Machine>(m: &M) -> Result<Outcome, String> {
                     continue;
                 }
                 let free = field_i64(row, "free_space").unwrap_or(0).max(0);
-                let mut name = field(row, "device_id").to_string();
+                let mut name = format!("{} drive", field(row, "device_id").trim_end_matches(':'));
                 if field(row, "boot_partition") == "1" {
-                    name.push_str(" (Windows drive)");
+                    name.push_str(" (Windows)");
                 }
                 drives.push(Drive {
                     name,
@@ -273,7 +273,7 @@ fn split_addresses(text: &str) -> Vec<String> {
             || c == '['
             || c == ']'
     })
-    .filter(|t| !t.is_empty() && (t.contains('.') || t.contains(':')))
+    .filter(|t| t.parse::<std::net::IpAddr>().is_ok())
     .map(str::to_string)
     .collect()
 }
@@ -335,7 +335,12 @@ pub async fn network_status<M: Machine>(m: &M) -> Result<Outcome, String> {
                     && field(row, "enabled") != "0"
                     && field(row, "physical_adapter") == "1"
                 {
-                    active.push(field(row, "friendly_name").to_string());
+                    let name = field(row, "friendly_name");
+                    active.push(if name.is_empty() {
+                        "network adapter".to_string()
+                    } else {
+                        name.to_string()
+                    });
                     dns.extend(split_addresses(field(row, "dns_server_search_order")));
                 }
             }
@@ -703,7 +708,7 @@ mod tests {
         assert_eq!(out.data["drives"].as_array().unwrap().len(), 1);
         assert!(out
             .summary
-            .contains("C: (Windows drive): 12 GB free of 238.5 GB (5%), nearly full."));
+            .contains("C drive (Windows): 12 GB free of 238.5 GB (5%), nearly full."));
     }
 
     #[tokio::test]
@@ -749,7 +754,10 @@ mod tests {
                         ("connection_status", "2"),
                         ("enabled", "1"),
                         ("physical_adapter", "1"),
-                        ("dns_server_search_order", "1.1.1.1, 8.8.8.8"),
+                        (
+                            "dns_server_search_order",
+                            "1.1.1.1, 8.8.8.8, host.internal.cloudapp.net",
+                        ),
                     ]),
                     row(&[
                         ("friendly_name", "Ethernet"),

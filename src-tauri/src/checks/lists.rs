@@ -172,7 +172,8 @@ pub async fn startup_items<M: Machine>(m: &M, options: &CheckOptions) -> Result<
     let limit = options.limit.unwrap_or(50) as usize;
     let mut entries: BTreeMap<String, Value> = BTreeMap::new();
     let mut add = |name: &str, kind: &str, scope: Option<&str>, enabled: Option<bool>| {
-        if name.is_empty() {
+        // Windows keeps a hidden desktop.ini in every Startup folder; it is not a program.
+        if name.is_empty() || name.eq_ignore_ascii_case("desktop.ini") {
             return;
         }
         let mut label = format!("{name} ({kind})");
@@ -369,9 +370,11 @@ pub async fn recent_crashes<M: Machine>(m: &M, options: &CheckOptions) -> Result
     } else {
         format!("{window_days} days")
     };
-    let what = match platform {
-        Platform::Mac => "crash reports",
-        Platform::Windows => "application errors",
+    let what = match (platform, total == 1) {
+        (Platform::Mac, false) => "crash reports",
+        (Platform::Mac, true) => "crash report",
+        (Platform::Windows, false) => "application errors",
+        (Platform::Windows, true) => "application error",
     };
     let summary = if total == 0 {
         format!("No {what} in the last {period}.")
@@ -523,10 +526,12 @@ mod tests {
             vec![
                 row(&[("name", "OneDrive"), ("type", "Startup Item"), ("source", "HKEY_USERS\\S-1-5-21\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), ("status", "enabled")]),
                 row(&[("name", "Zoom.lnk"), ("type", "Startup Item"), ("source", "C:\\Users\\pat\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"), ("status", "disabled")]),
+                row(&[("name", "desktop.ini"), ("type", "Startup Item"), ("source", "C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp"), ("status", "enabled")]),
             ],
         );
         let out = startup_items(&m, &CheckOptions::default()).await.unwrap();
         let items = out.data["items"].as_array().unwrap();
+        assert_eq!(items.len(), 2);
         assert_eq!(items[0]["kind"], json!("Starts at sign-in (registry)"));
         assert_eq!(
             items[1]["label"],
@@ -618,7 +623,7 @@ mod tests {
         );
         assert_eq!(
             out.summary,
-            "1 application errors in the last 3 days. Most often: Application Error (1)."
+            "1 application error in the last 3 days. Most often: Application Error (1)."
         );
         assert!(m.asked.lock().unwrap()[0].contains("timestamp = '259200000'"));
     }
