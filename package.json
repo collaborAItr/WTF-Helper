@@ -1,0 +1,20 @@
+{
+  "name": "wtf-helper",
+  "private": true,
+  "version": "0.1.0",
+  "description": "WTF Helper: read-only computer checks for your collaborAItr guide, each approved by you.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "fetch-osquery": "node scripts/fetch-osquery.mjs",
+    "icons": "python3 scripts/make-placeholder-icons.py && tauri icon src-tauri/icon-sources/icon.png -o src-tauri/icons && tauri icon src-tauri/icon-sources/icon-test.png -o src-tauri/icons-test",
+    "dev": "tauri dev",
+    "dev:test": "tauri dev --features test-build --config src-tauri/tauri.test.conf.json",
+    "dev:local": "tauri dev --features local-dev",
+    "build": "tauri build",
+    "build:test": "tauri build --features test-build --config src-tauri/tauri.test.conf.json",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.0"
+  }
+}

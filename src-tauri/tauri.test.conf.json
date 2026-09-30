@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "WTF Helper Test",
+  "mainBinaryName": "wtf-helper-test",
+  "identifier": "com.collaboraitr.wtfhelper.test",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "WTF Helper Test",
+        "width": 520,
+        "height": 720,
+        "minWidth": 420,
+        "minHeight": 520,
+        "center": true,
+        "resizable": true
+      }
+    ]
+  },
+  "bundle": {
+    "shortDescription": "Tester build of WTF Helper. Connects only to the collaborAItr test site.",
+    "icon": [
+      "icons-test/32x32.png",
+      "icons-test/128x128.png",
+      "icons-test/128x128@2x.png",
+      "icons-test/icon.icns",
+      "icons-test/icon.ico"
+    ]
+  }
+}
